@@ -15,6 +15,7 @@ var FONT_COLOR = 'rgba(0, 0, 0, 1)'; // Цвет шрифта
 var COLUMN_GAP = 50; // Расстояние между колонками
 var COLUMN_WIDTH = 40; // Ширина колонки
 var COLUMN_MAX_HEIGHT = 150; // Максимальная высота колонки
+var PLAYER_COLUMN_COLOR = '255, 0, 0, '; // Цвет колонки последнего игрока
 var COLUMN_COLOR = '0, 0, 255, '; // Цвет для колонки результата, rgb
 
 /**
@@ -59,8 +60,15 @@ var getMaxTime = function (arr) {
  * @return {string} цвет колонки в формате rgba
 */
 var getColumnColor = function (name) {
-  var columnOpacity = (name === 'Вы') ? 1 : Math.random() * (0.9 - 0.1) + 0.1;
-  return 'rgba(' + COLUMN_COLOR + columnOpacity + ')';
+  if (name === 'Вы') {
+    var opacity = 1;
+    var color = PLAYER_COLUMN_COLOR;
+  } else {
+    opacity = Math.random() * (1 - 0.1) + 0.1;
+    color = COLUMN_COLOR;
+  }
+
+  return 'rgba(' + color + opacity + ')';
 };
 
 /**
@@ -99,7 +107,7 @@ var renderResults = function (ctx, names, times) {
 };
 
 /**
- * Функция, запускающая функции отрисовки
+ * Функция, запускающая необходимые функции отрисовки
  * @param {object} ctx контекст рисования
  * @param {object} names список имен игроков
  * @param {object} times список времени игроков
