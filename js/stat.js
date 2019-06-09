@@ -60,11 +60,13 @@ var getMaxTime = function (arr) {
  * @return {string} цвет колонки в формате rgba
 */
 var getColumnColor = function (name) {
+  var opacity;
+  var color;
   if (name === 'Вы') {
-    var opacity = 1;
-    var color = PLAYER_COLUMN_COLOR;
+    opacity = 1;
+    color = PLAYER_COLUMN_COLOR;
   } else {
-    opacity = Math.random() * (1 - 0.1) + 0.1;
+    opacity = (Math.random() * 0.9 + 0.1).toFixed(2);
     color = COLUMN_COLOR;
   }
 
@@ -80,29 +82,19 @@ var getColumnColor = function (name) {
 var renderResults = function (ctx, names, times) {
   var cloudPadding = (CLOUD_WIDTH - names.length * COLUMN_WIDTH - (names.length - 1) * COLUMN_GAP) / 2; // Расчёт отступа для центровки статистики в облаке
   var columnHeightCoefficient = COLUMN_MAX_HEIGHT / getMaxTime(times); // Получение коэффициента для расчёт высоты колонок (отношение максимального времени игры к максимальной высоте колонки)
-
+  var columnBottom = CLOUD_Y + CLOUD_HEIGHT - 2 * GAP - FONT_SIZE; // Получение координаты Y нижнего края колонки-гистограммы для текущего игрока
+  var columnTop;
 
   ctx.textAlign = 'left';
 
   for (var i = 0; i < names.length; i++) {
-    var score = Math.floor(times[i]); // Получение целой части времени игры для текущего игрока
-
-    var columnX = CLOUD_X + cloudPadding + i * (COLUMN_WIDTH + COLUMN_GAP); // Получение координаты X для колонки текущего игрока
-
-    var nameY = CLOUD_Y + CLOUD_HEIGHT - GAP; // Получение координаты Y для имени текущего игрока
-
-    var columnBottom = nameY - GAP - FONT_SIZE; // Получение координаты Y нижнего края колонки-гистограммы для текущего игрока
-    var columnHeight = Math.floor(score * columnHeightCoefficient); // Получение высоты колонки-гистограммы для текущего игрока
-    var columnTop = columnBottom - columnHeight; // Получение координаты Y верхнего края колонки-гистограммы для текущего игрока
-
-    var scoreBottom = columnTop - GAP; // Получение координаты Y для времени текущего игрока
+    columnTop = columnBottom - Math.floor(Math.floor(times[i]) * columnHeightCoefficient); // Получение координаты Y верхнего края колонки-гистограммы для текущего игрока
 
     ctx.fillStyle = FONT_COLOR; // Задание цвета текста
-    ctx.fillText(score, columnX, scoreBottom); // Отрисовка счёта текущего игрока
-    ctx.fillText(names[i], columnX, nameY); // Отрисовка имени текущего игрока
-
+    ctx.fillText(Math.floor(times[i]), CLOUD_X + cloudPadding + i * (COLUMN_WIDTH + COLUMN_GAP), columnTop - GAP); // Отрисовка счёта текущего игрока
+    ctx.fillText(names[i], CLOUD_X + cloudPadding + i * (COLUMN_WIDTH + COLUMN_GAP), CLOUD_Y + CLOUD_HEIGHT - GAP); // Отрисовка имени текущего игрока
     ctx.fillStyle = getColumnColor(names[i]); // Задание цвета колонки-гистограммы текущего игрока
-    ctx.fillRect(columnX, columnTop, COLUMN_WIDTH, columnHeight); // Отрисовка колонки-гистограммы для текущего игрока
+    ctx.fillRect(CLOUD_X + cloudPadding + i * (COLUMN_WIDTH + COLUMN_GAP), columnTop, COLUMN_WIDTH, columnBottom - columnTop); // Отрисовка колонки-гистограммы для текущего игрока
   }
 };
 
