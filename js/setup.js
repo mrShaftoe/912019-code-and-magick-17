@@ -9,11 +9,23 @@ var SURNAMES = ['да Марья', 'Верон', 'Мирабелла', 'Валь
 var COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
 var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
 var FIREBALL_COLORS = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
+var ESC_KEY_CODE = 27;
+var ENTER_KEY_CODE = 13;
 var wizardTemplate = document.querySelector('#similar-wizard-template')
     .content
     .querySelector('.setup-similar-item');
 var similarList = document.querySelector('.setup-similar-list');
 var wizardsData = [];
+var setupOpen = document.querySelector('.setup-open');
+var setup = document.querySelector('.setup');
+var setupClose = setup.querySelector('.setup-close');
+var username = setup.querySelector('.setup-user-name');
+var wizardCoat = setup.querySelector('.setup-wizard .wizard-coat');
+var wizardEyes = setup.querySelector('.setup-wizard .wizard-eyes');
+var wizardFireball = setup.querySelector('.setup-fireball-wrap');
+var wizardCoatInput = setup.querySelector('.setup-player [name="coat-color"]');
+var wizardEyesInput = setup.querySelector('.setup-player [name="eyes-color"]');
+var fireballColor = setup.querySelector('.setup-player [name="fireball-color"]');
 
 /**
  * Функция получения случайного элемента из массива строк
@@ -36,11 +48,6 @@ var createWizardData = function () {
   };
 };
 
-
-for (var i = 0; i < 4; i++) {
-  wizardsData.push(createWizardData());
-}
-
 /**
  * Функция создания DOM элемента, содержащего разметку персонажа
  * @param {object} wizard объект, содержащий данные персонажа
@@ -54,37 +61,12 @@ var renderWizard = function (wizard) {
   return similarWizard;
 };
 
-
-var fragment = document.createDocumentFragment();
-for (i = 0; i < wizardsData.length; i++) {
-  fragment.appendChild(renderWizard(wizardsData[i]));
-}
-
-similarList.appendChild(fragment);
-document.querySelector('.setup-similar').classList.remove('hidden');
-
-/**
-* Открытие и закрытие окна настроек персонажа (setup)
-*/
-
-var ESC_KEY_CODE = 27;
-var ENTER_KEY_CODE = 13;
-var setupOpen = document.querySelector('.setup-open');
-var setup = document.querySelector('.setup');
-var setupClose = setup.querySelector('.setup-close');
-var username = setup.querySelector('.setup-user-name');
-
 /**
  * Функция показа скрытого окна setup
  */
 var openSetup = function () {
   setup.classList.remove('hidden');
   document.addEventListener('keydown', onSetupEscPress);
-  username.addEventListener('focus', onUsernameFocus);
-  setupClose.addEventListener('keydown', onSetupCloseEnterPress);
-  wizardCoat.addEventListener('click', onWizardCoatClick);
-  wizardEyes.addEventListener('click', onWizardEyesClick);
-  wizardFireball.addEventListener('click', onWizardFireballClick);
 };
 
 /**
@@ -93,11 +75,6 @@ var openSetup = function () {
 var closeSetup = function () {
   setup.classList.add('hidden');
   document.removeEventListener('keydown', onSetupEscPress);
-  username.removeEventListener('focus', onUsernameFocus);
-  setupClose.removeEventListener('keydown', onSetupCloseEnterPress);
-  wizardCoat.removeEventListener('click', onWizardCoatClick);
-  wizardEyes.removeEventListener('click', onWizardEyesClick);
-  wizardFireball.removeEventListener('click', onWizardFireballClick);
 };
 
 /**
@@ -106,29 +83,25 @@ var closeSetup = function () {
  */
 var onSetupEscPress = function (evt) {
   if (evt.keyCode === ESC_KEY_CODE) {
+    if (username === document.activeElement) {
+      return;
+    }
     closeSetup();
   }
 };
 
-/**
- * Функция скрытия окна setup нажатием клавиши Enter при фокусе на элементе setup-close
- * @param {object} evt событие
- */
-var onSetupCloseEnterPress = function (evt) {
-  if (evt.keyCode === ENTER_KEY_CODE) {
-    closeSetup();
-  }
-};
+var fragment = document.createDocumentFragment();
 
+for (var i = 0; i < 4; i++) {
+  wizardsData.push(createWizardData());
+}
 
-var onUsernameBlur = function () {
-  document.addEventListener('keydown', onSetupEscPress);
-};
+for (i = 0; i < wizardsData.length; i++) {
+  fragment.appendChild(renderWizard(wizardsData[i]));
+}
 
-var onUsernameFocus = function () {
-  document.removeEventListener('keydown', onSetupEscPress);
-  username.addEventListener('blur', onUsernameBlur);
-};
+similarList.appendChild(fragment);
+document.querySelector('.setup-similar').classList.remove('hidden');
 
 setupOpen.addEventListener('click', function () {
   openSetup();
@@ -144,34 +117,23 @@ setupClose.addEventListener('click', function () {
   closeSetup();
 });
 
-var wizardCoat = setup.querySelector('.setup-wizard .wizard-coat');
-var wizardEyes = setup.querySelector('.setup-wizard .wizard-eyes');
-var wizardFireball = setup.querySelector('.setup-fireball-wrap');
+setupClose.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEY_CODE) {
+    closeSetup();
+  }
+});
 
-/**
- * Функция изменения цвета мантии волшебника
- */
-var onWizardCoatClick = function () {
-  var newColor = getRandomElement(COAT_COLORS);
-  wizardCoat.style.fill = newColor;
-  setup.querySelector('.setup-player [name="coat-color"]').value = newColor;
-};
+wizardCoat.addEventListener('click', function () {
+  wizardCoat.style.fill = getRandomElement(COAT_COLORS);
+  wizardCoatInput.value = wizardCoat.style.fill;
+});
 
-/**
- * Функция изменения цвета глаз волшебника
- */
-var onWizardEyesClick = function () {
-  var newColor = getRandomElement(EYES_COLORS);
-  wizardEyes.style.fill = newColor;
-  setup.querySelector('.setup-player [name="eyes-color"]').value = newColor;
-};
+wizardEyes.addEventListener('click', function () {
+  wizardEyes.style.fill = getRandomElement(EYES_COLORS);
+  wizardEyesInput.value = wizardEyes.style.fill;
+});
 
-/**
- * Функция изменения цвета фаербола волшебника
- */
-var onWizardFireballClick = function () {
-  var newColor = getRandomElement(FIREBALL_COLORS);
-  wizardFireball.style.backgroundColor = newColor;
-  setup.querySelector('.setup-player [name="fireball-color"]').value = newColor;
-};
-
+wizardFireball.addEventListener('click', function () {
+  fireballColor.value = getRandomElement(FIREBALL_COLORS);
+  wizardFireball.style.backgroundColor = fireballColor.value;
+});
