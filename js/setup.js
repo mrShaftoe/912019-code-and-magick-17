@@ -18,6 +18,7 @@ var similarList = document.querySelector('.setup-similar-list');
 var wizardsData = [];
 var setupOpen = document.querySelector('.setup-open');
 var setup = document.querySelector('.setup');
+var setupDefaultCoords = {};
 var setupClose = setup.querySelector('.setup-close');
 var username = setup.querySelector('.setup-user-name');
 var wizardCoat = setup.querySelector('.setup-wizard .wizard-coat');
@@ -66,6 +67,10 @@ var renderWizard = function (wizard) {
  */
 var openSetup = function () {
   setup.classList.remove('hidden');
+  setupDefaultCoords = {
+    x: setup.offsetLeft,
+    y: setup.offsetTop
+  };
   document.addEventListener('keydown', onSetupEscPress);
 };
 
@@ -75,6 +80,8 @@ var openSetup = function () {
 var closeSetup = function () {
   setup.classList.add('hidden');
   document.removeEventListener('keydown', onSetupEscPress);
+  setup.style.left = setupDefaultCoords.x + 'px';
+  setup.style.top = setupDefaultCoords.y + 'px';
 };
 
 /**
