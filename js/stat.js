@@ -110,3 +110,4 @@ window.renderStatistics = function (ctx, names, times) {
   renderCloudHeader(ctx, CLOUD_HEADER_TEXT); // Отрисовка шапки облака сообщения
   renderResults(ctx, names, times); // Отрисовка результатов
 };
+

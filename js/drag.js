@@ -1,10 +1,11 @@
 'use strict';
 
+
 var setup = document.querySelector('.setup');
 var shop = setup.querySelector('.setup-artifacts-shop');
 var goods = shop.querySelectorAll('img');
 var dropzone = setup.querySelector('.setup-artifacts');
-var dragObj;
+var dragObj = null;
 
 var addDragstartListener = function (obj) {
   obj.addEventListener('dragstart', function () {
@@ -12,15 +13,18 @@ var addDragstartListener = function (obj) {
   });
 };
 
+for (var i = 0; i < goods.length; i++) {
+  /* goods[i].addEventListener('dragstart', function () {
+    dragObj = goods[i];
+  }); */
+  addDragstartListener(goods[i]);
+}
+
 var onItemDrop = function (evt) {
   evt.preventDefault();
   dragObj.parentNode.removeChild(dragObj);
   evt.target.appendChild(dragObj);
 };
-
-for (var i = 0; i < goods.length; i++) {
-  addDragstartListener(goods[i]);
-}
 
 dropzone.addEventListener('dragover', function (evt) {
   evt.preventDefault();
@@ -33,5 +37,3 @@ shop.addEventListener('dragover', function (evt) {
 });
 
 shop.addEventListener('drop', onItemDrop);
-
-
