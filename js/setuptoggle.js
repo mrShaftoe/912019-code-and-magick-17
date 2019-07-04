@@ -6,7 +6,6 @@ window.setupToggle = (function () {
   var setupDefaultCoords = {};
 
   return {
-    setup: setup,
     /**
      * Функция показа скрытого окна setup
      */
