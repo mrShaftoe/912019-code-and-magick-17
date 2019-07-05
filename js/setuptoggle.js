@@ -26,7 +26,7 @@ window.setupToggle = (function () {
       document.removeEventListener('keydown', this.onSetupEscPress);
       var errorMsg = document.querySelector('.error');
       if (errorMsg) {
-        document.body.removeChild(errorMsg);
+        setup.removeChild(errorMsg);
         setupSubmit.disabled = false;
       }
       setup.style.left = setupDefaultCoords.x + 'px';

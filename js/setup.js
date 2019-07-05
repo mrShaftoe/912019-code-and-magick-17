@@ -8,26 +8,16 @@ var WizardData = {
   FIREBALL_COLORS: ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'],
 };
 
-var SIMILAR_WIZARD_COUNT = 4;
-var similarList = document.querySelector('.setup-similar-list');
 var setupOpen = document.querySelector('.setup-open');
 var setup = document.querySelector('.setup');
 var form = setup.querySelector('form');
 var setupClose = setup.querySelector('.setup-close');
-var setupSubmit = setup.querySelector('.setup-submit');
 var wizardCoat = setup.querySelector('.setup-wizard .wizard-coat');
 var wizardEyes = setup.querySelector('.setup-wizard .wizard-eyes');
 var wizardFireball = setup.querySelector('.setup-fireball-wrap');
 var wizardCoatInput = setup.querySelector('.setup-player [name="coat-color"]');
 var wizardEyesInput = setup.querySelector('.setup-player [name="eyes-color"]');
 var fireballColor = setup.querySelector('.setup-player [name="fireball-color"]');
-
-var fragment = document.createDocumentFragment();
-for (var i = 0; i < SIMILAR_WIZARD_COUNT; i++) {
-  fragment.appendChild(window.renderSimilarWizard(WizardData));
-}
-similarList.appendChild(fragment);
-document.querySelector('.setup-similar').classList.remove('hidden');
 
 // Открытие окна setup по клику на иконке
 setupOpen.addEventListener('click', function () {
@@ -66,15 +56,11 @@ wizardFireball.addEventListener('click', function () {
   window.utils.colorize(WizardData.FIREBALL_COLORS, wizardFireball, fireballColor);
 });
 
-form.addEventListener('submit', function (evt) {
-  window.backend.save(
-      new FormData(form),
-      function () {
-        window.setupToggle.closeSetup();
-      },
-      function (message) {
-        window.createErrorWindow(message);
-        setupSubmit.disabled = true;
-      });
-  evt.preventDefault();
-});
+form.addEventListener('submit', window.onSuccess.save);
+
+window.backend.load(
+    window.onSuccess.load,
+    function (message) {
+      window.onError.onError('Ошибка получения данных. ', message);
+    }
+);
