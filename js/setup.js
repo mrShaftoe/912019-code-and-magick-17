@@ -8,8 +8,11 @@ var WizardData = {
   FIREBALL_COLORS: ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'],
 };
 
+var SIMILAR_WIZARD_COUNT = 4;
 var setupOpen = document.querySelector('.setup-open');
 var setup = document.querySelector('.setup');
+var setupSubmit = setup.querySelector('.setup-submit');
+var similarList = setup.querySelector('.setup-similar-list');
 var form = setup.querySelector('form');
 var setupClose = setup.querySelector('.setup-close');
 var wizardCoat = setup.querySelector('.setup-wizard .wizard-coat');
@@ -18,6 +21,38 @@ var wizardFireball = setup.querySelector('.setup-fireball-wrap');
 var wizardCoatInput = setup.querySelector('.setup-player [name="coat-color"]');
 var wizardEyesInput = setup.querySelector('.setup-player [name="eyes-color"]');
 var fireballColor = setup.querySelector('.setup-player [name="fireball-color"]');
+
+var fadeOut = function (elem, interval) {
+  if (+elem.style.opacity > 0.1) {
+    elem.style.opacity -= 0.01;
+  } else {
+    elem.parentNode.removeChild(elem);
+    clearInterval(interval);
+  }
+};
+
+var onError = function (message) {
+  var errorWindow = setup.querySelector('.error') || document.createElement('div');
+  errorWindow.innerText = 'Ошибка загрузки данных. ' + message;
+  errorWindow.classList.add('error');
+  errorWindow.style.opacity = 1;
+  document.body.appendChild(errorWindow);
+  setTimeout(function () {
+    var interval = setInterval(function () {
+      fadeOut(errorWindow, interval);
+    }, 60);
+  }, 3000);
+};
+
+var onLoad = function (response) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < SIMILAR_WIZARD_COUNT; i++) {
+    fragment.appendChild(window.renderSimilarWizard(response[i]));
+  }
+  similarList.appendChild(fragment);
+  document.querySelector('.setup-similar').classList.remove('hidden');
+};
+
 
 // Открытие окна setup по клику на иконке
 setupOpen.addEventListener('click', function () {
@@ -56,4 +91,17 @@ wizardFireball.addEventListener('click', function () {
   window.utils.colorize(WizardData.FIREBALL_COLORS, wizardFireball, fireballColor);
 });
 
-form.addEventListener('submit', window.onSuccess.save);
+form.addEventListener('submit', function (evt) {
+  setupSubmit.disabled = true;
+  window.backend.save(
+      new FormData(form),
+      window.setupToggle.closeSetup,
+      onError);
+  evt.preventDefault();
+  while (window.backend.isDone) {
+    continue;
+  }
+  setupSubmit.disabled = false;
+
+});
+window.backend.load(onLoad, onError);
