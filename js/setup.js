@@ -57,10 +57,3 @@ wizardFireball.addEventListener('click', function () {
 });
 
 form.addEventListener('submit', window.onSuccess.save);
-
-window.backend.load(
-    window.onSuccess.load,
-    function (message) {
-      window.onError.onError('Ошибка получения данных. ', message);
-    }
-);

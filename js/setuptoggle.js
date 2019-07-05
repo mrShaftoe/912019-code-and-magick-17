@@ -15,6 +15,12 @@ window.setupToggle = (function () {
         x: setup.offsetLeft,
         y: setup.offsetTop
       };
+      window.backend.load(
+          window.onSuccess.load,
+          function (message) {
+            window.onError.onError('Ошибка получения данных. ', message);
+          }
+      );
       document.addEventListener('keydown', this.onSetupEscPress);
     },
 
