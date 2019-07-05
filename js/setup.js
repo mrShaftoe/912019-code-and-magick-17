@@ -14,6 +14,7 @@ var setupOpen = document.querySelector('.setup-open');
 var setup = document.querySelector('.setup');
 var form = setup.querySelector('form');
 var setupClose = setup.querySelector('.setup-close');
+var setupSubmit = setup.querySelector('.setup-submit');
 var wizardCoat = setup.querySelector('.setup-wizard .wizard-coat');
 var wizardEyes = setup.querySelector('.setup-wizard .wizard-eyes');
 var wizardFireball = setup.querySelector('.setup-fireball-wrap');
@@ -66,8 +67,14 @@ wizardFireball.addEventListener('click', function () {
 });
 
 form.addEventListener('submit', function (evt) {
-  window.backend.save(new FormData(form), function () {
-    window.setupToggle.closeSetup();
-  });
+  window.backend.save(
+      new FormData(form),
+      function () {
+        window.setupToggle.closeSetup();
+      },
+      function (message) {
+        window.createErrorWindow(message);
+        setupSubmit.disabled = true;
+      });
   evt.preventDefault();
 });

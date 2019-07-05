@@ -4,7 +4,7 @@ window.setupToggle = (function () {
   var setup = document.querySelector('.setup');
   var username = setup.querySelector('.setup-user-name');
   var setupDefaultCoords = {};
-
+  var setupSubmit = setup.querySelector('.setup-submit');
   return {
     /**
      * Функция показа скрытого окна setup
@@ -24,6 +24,11 @@ window.setupToggle = (function () {
     closeSetup: function () {
       setup.classList.add('hidden');
       document.removeEventListener('keydown', this.onSetupEscPress);
+      var errorMsg = document.querySelector('.error');
+      if (errorMsg) {
+        document.body.removeChild(errorMsg);
+        setupSubmit.disabled = false;
+      }
       setup.style.left = setupDefaultCoords.x + 'px';
       setup.style.top = setupDefaultCoords.y + 'px';
     },
