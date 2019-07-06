@@ -27,12 +27,6 @@ window.backend = (function () {
   return {
     save: function (data, onLoad, onError) {
       var xhr = new XMLHttpRequest();
-      window.backend.isDone = false;
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          window.backend.isDone = true;
-        }
-      };
       createXhr(xhr, SAVE_URL, 'POST', onLoad, onError);
       xhr.send(data);
     },

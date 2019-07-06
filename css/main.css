@@ -1022,7 +1022,7 @@ input[type=radio]:checked + .review-mark-label
 
 .error
 {
-  width: calc(790px);
+  width: 790px;
   background-color: red;
   font-size: 12px;
   font-weight: 700;
@@ -1032,9 +1032,8 @@ input[type=radio]:checked + .review-mark-label
   padding: 5px;
   position: fixed;
   left: calc(50% - 400px);
-  top: 12%;
+  top: 5%;
   will-change: opacity;
-  opacity: 1;
   box-shadow: 10px 10px 0 rgba(0, 0, 0, .25);
 }
 

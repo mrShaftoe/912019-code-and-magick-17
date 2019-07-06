@@ -42,11 +42,13 @@ var onError = function (message) {
       fadeOut(errorWindow, interval);
     }, 60);
   }, 3000);
+  setupSubmit.disabled = false;
 };
 
 var onLoad = function (response) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < SIMILAR_WIZARD_COUNT; i++) {
+  var similarLength = response.length > SIMILAR_WIZARD_COUNT ? SIMILAR_WIZARD_COUNT : response.length;
+  for (var i = 0; i < similarLength; i++) {
     fragment.appendChild(window.renderSimilarWizard(response[i]));
   }
   similarList.appendChild(fragment);
@@ -95,13 +97,11 @@ form.addEventListener('submit', function (evt) {
   setupSubmit.disabled = true;
   window.backend.save(
       new FormData(form),
-      window.setupToggle.closeSetup,
+      function () {
+        window.setupToggle.closeSetup();
+        setupSubmit.disabled = false;
+      },
       onError);
   evt.preventDefault();
-  while (window.backend.isDone) {
-    continue;
-  }
-  setupSubmit.disabled = false;
-
 });
 window.backend.load(onLoad, onError);
