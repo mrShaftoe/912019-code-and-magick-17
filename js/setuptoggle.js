@@ -6,7 +6,6 @@ window.setupToggle = (function () {
   var setupDefaultCoords = {};
 
   return {
-    setup: setup,
     /**
      * Функция показа скрытого окна setup
      */
@@ -16,7 +15,7 @@ window.setupToggle = (function () {
         x: setup.offsetLeft,
         y: setup.offsetTop
       };
-      document.addEventListener('keydown', this.onSetupEscPress);
+      document.addEventListener('keydown', window.setupToggle.onSetupEscPress);
     },
 
     /**
@@ -24,7 +23,7 @@ window.setupToggle = (function () {
      */
     closeSetup: function () {
       setup.classList.add('hidden');
-      document.removeEventListener('keydown', this.onSetupEscPress);
+      document.removeEventListener('keydown', window.setupToggle.onSetupEscPress);
       setup.style.left = setupDefaultCoords.x + 'px';
       setup.style.top = setupDefaultCoords.y + 'px';
     },
