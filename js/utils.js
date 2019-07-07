@@ -1,5 +1,4 @@
 'use strict';
-
 window.utils = (function () {
   var ESC_KEY_CODE = 27;
   var ENTER_KEY_CODE = 13;
@@ -24,6 +23,30 @@ window.utils = (function () {
       } else {
         elem.style.fill = input.value;
       }
+    },
+
+    fadeOut: function (elem, interval) {
+      if (+elem.style.opacity > 0.1) {
+        elem.style.opacity -= 0.01;
+      } else {
+        if (elem) {
+          elem.parentNode.removeChild(elem);
+        }
+        clearInterval(interval);
+      }
+    },
+
+    createErrorWindow: function (message) {
+      var errorWindow = document.querySelector('.error') || document.createElement('div');
+      errorWindow.innerText = 'Ошибка загрузки данных. ' + message;
+      errorWindow.classList.add('error');
+      errorWindow.style.opacity = 1;
+      document.body.appendChild(errorWindow);
+      setTimeout(function () {
+        var interval = setInterval(function () {
+          window.utils.fadeOut(errorWindow, interval);
+        }, 60);
+      }, 3000);
     }
   };
 })();
